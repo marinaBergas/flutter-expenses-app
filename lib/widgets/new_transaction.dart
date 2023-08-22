@@ -16,15 +16,15 @@ class _NewTransactionState extends State<NewTransaction> {
   DateTime? _selectedDate;
 
   void _submitData() {
-    if(_amountController.text.isEmpty){
+    if (_amountController.text.isEmpty) {
       return;
     }
     final titleEntered = _titleController.text;
     final amountEntered = double.parse(_amountController.text);
-    if (titleEntered.isEmpty || amountEntered <= 0 || _selectedDate==null) {
+    if (titleEntered.isEmpty || amountEntered <= 0 || _selectedDate == null) {
       return;
     }
-    widget.addNewTransaction(titleEntered, amountEntered,_selectedDate);
+    widget.addNewTransaction(titleEntered, amountEntered, _selectedDate);
     //to close build context popup
     Navigator.of(context).pop();
   }
@@ -57,58 +57,61 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            TextField(
-              decoration: const InputDecoration(labelText: 'Title'),
-              // onChanged: (value) {
-              //   titleInput=value;
-              // },
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: 'Amount'),
-              // onChanged: (value) {
-              //   amountInput=value;
-              // },
-              controller: _amountController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (_) => _submitData(),
-            ),
-            SizedBox(
-              height: 50,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Text(_selectedDate == null
-                          ? 'No Date Chosen !'
-                          : 'picke Date :${DateFormat.yMd().format(_selectedDate!)}')),
-                  TextButton(
-                    onPressed: _presentDatePicker,
-                    style: TextButton.styleFrom(
-                        foregroundColor: Theme.of(context).primaryColor),
-                    child: const Text(
-                      'Choose Date',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )
-                ],
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Container(
+          padding:
+               EdgeInsets.only(left: 10, bottom: MediaQuery.of(context).viewInsets.bottom+10, right: 10, top: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                decoration: const InputDecoration(labelText: 'Title'),
+                // onChanged: (value) {
+                //   titleInput=value;
+                // },
+                controller: _titleController,
+                onSubmitted: (_) => _submitData(),
               ),
-            ),
-            ElevatedButton(
-                onPressed: _submitData,
-                style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white),
-                child: const Text('Add transaction')),
-          ],
+              TextField(
+                decoration: const InputDecoration(labelText: 'Amount'),
+                // onChanged: (value) {
+                //   amountInput=value;
+                // },
+                controller: _amountController,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (_) => _submitData(),
+              ),
+              SizedBox(
+                height: 50,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Text(_selectedDate == null
+                            ? 'No Date Chosen !'
+                            : 'picke Date :${DateFormat.yMd().format(_selectedDate!)}')),
+                    TextButton(
+                      onPressed: _presentDatePicker,
+                      style: TextButton.styleFrom(
+                          foregroundColor: Theme.of(context).primaryColor),
+                      child: const Text(
+                        'Choose Date',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: _submitData,
+                  style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white),
+                  child: const Text('Add transaction')),
+            ],
+          ),
         ),
       ),
     );

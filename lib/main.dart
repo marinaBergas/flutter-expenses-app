@@ -1,41 +1,48 @@
 // import 'package:flutter/services.dart';
 
+// ignore_for_file: sized_box_for_whitespace
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+// ignore: unnecessary_import
+import 'package:flutter/services.dart';
+
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
-import 'package:flutter/material.dart';
-import './models/transaction.dart';
 import './widgets/chart.dart';
 
-void main() {
+import './models/transaction.dart';
 
+void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);
-   runApp(
-      MaterialApp(
-          title: 'Personal Expenses',
-          home: const MyHomePage(),
-          theme: ThemeData(
-              primarySwatch: Colors.purple,
-              fontFamily: 'QuickSand',
-              colorScheme: ColorScheme.fromSwatch().copyWith(
-                secondary: Colors.green,
-                error: Colors.red // Your accent color
-              ),
-              textTheme: ThemeData.light().textTheme.copyWith(
+  runApp(
+    MaterialApp(
+        title: 'Personal Expenses',
+        home: const MyHomePage(),
+        theme: ThemeData(
+            primarySwatch: Colors.purple,
+            fontFamily: 'QuickSand',
+            colorScheme: ColorScheme.fromSwatch().copyWith(
+                secondary: Colors.green, error: Colors.red // Your accent color
+                ),
+            textTheme: ThemeData.light().textTheme.copyWith(
                   titleSmall: const TextStyle(
                       fontFamily: 'OpenSans',
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       backgroundColor: Colors.green),
-                      ),
-              appBarTheme: const AppBarTheme(
-                  titleTextStyle: TextStyle(
-                      fontFamily: 'OpenSans',
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold)))),
-    );
+                ),
+            appBarTheme: const AppBarTheme(
+                titleTextStyle: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold)))),
+  );
 }
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -44,7 +51,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
- static bool _showChart=false;
+  static bool _showChart = false;
   final List<Transaction> _userTransactions = [
     // Transaction(
     //     id: 't1', title: 'New Shoes', amount: 10.98, date: DateTime.now()),
@@ -58,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount,DateTime chosenDate) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
         id: DateTime.now().toString(),
         title: txTitle,
@@ -69,11 +77,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-void _deleteTransaction(String id){
-setState(() {
-  _userTransactions.removeWhere((element) => element.id==id);
-});
-}
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransactions.removeWhere((element) => element.id == id);
+    });
+  }
+
   //  static String? titleInput;
   void _startAddNewTransaction(BuildContext ctx) {
     showModalBottomSheet(
@@ -85,59 +94,114 @@ setState(() {
             ));
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    final appBar=AppBar(
-          title: const Text(
-            'Personal Expenses',
-            style: TextStyle(fontFamily: 'OpenSans'),
-          ),
-          actions: [
-            IconButton(
-                onPressed: () => _startAddNewTransaction(context),
-                icon: const Icon(Icons.add))
-          ],
-        );
-    return Scaffold(
-        appBar:appBar ,
-        body: SingleChildScrollView(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Row(children: [
+    final mediaQuery = MediaQuery.of(context);
+
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final appBar = Platform.isIOS
+        ?  CupertinoNavigationBar(
+            middle:const Text(
+              'Personal Expenses',
+              style: TextStyle(fontFamily: 'OpenSans'),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // IconButton(
+                //   icon:const Icon(Icons.add),
+                //   onPressed: () => _startAddNewTransaction(context),
+                // )
+                GestureDetector(onTap:  () => _startAddNewTransaction(context),child: 
+               const Icon(CupertinoIcons.add),)
+              ],
+            ),
+          )
+        : AppBar(
+            title: const Text(
+              'Personal Expenses',
+              style: TextStyle(fontFamily: 'OpenSans'),
+            ),
+            actions: [
+              IconButton(
+                  onPressed: () => _startAddNewTransaction(context),
+                  icon: const Icon(Icons.add))
+            ],
+          );
+
+    final txListWidget = Container(
+        height: (mediaQuery.size.height -
+                (appBar as PreferredSizeWidget).preferredSize.height -
+                mediaQuery.padding.top) *
+            0.7,
+        child: TransactionList(_userTransactions, _deleteTransaction));
+
+    final pageBody = SafeArea(child:  SingleChildScrollView(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        if (isLandscape)
+          Row(
+            children: [
               const Text('show chart'),
-              Switch(value: _showChart, onChanged: (value) {
-                setState(() {
-                  _showChart=value;
-                });
-              },)
-            ],)
-            // const Card(
-            //   color: Colors.blue,
-            //   elevation: 5,
-            //   child: SizedBox(
-            //       width: double.infinity,
-            //       child: Text(
-            //         'chart',
-            //         textAlign: TextAlign.center,
-            //       )),
-            // ),
-            // ignore: sized_box_for_whitespace
-            ,_showChart?Container(height: (MediaQuery.of(context).size.height - appBar.preferredSize.height-MediaQuery.of(context).padding.top)*0.35,child: Chart(_recentTransaction))
-            // ignore: sized_box_for_whitespace
-           : Container(height: (MediaQuery.of(context).size.height - appBar.preferredSize.height-MediaQuery.of(context).padding.top)*0.65,child: TransactionList(_userTransactions,_deleteTransaction))
-          ],
-        )),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _startAddNewTransaction(context),
-          child: const Icon(Icons.add),
-          
-        ),
-        
-        );
+              Switch.adaptive(
+                activeColor: Theme.of(context).colorScheme.secondary,
+                value: _showChart,
+                onChanged: (value) {
+                  setState(() {
+                    _showChart = value;
+                  });
+                },
+              )
+            ],
+          )
+        // const Card(
+        //   color: Colors.blue,
+        //   elevation: 5,
+        //   child: SizedBox(
+        //       width: double.infinity,
+        //       child: Text(
+        //         'chart',
+        //         textAlign: TextAlign.center,
+        //       )),
+        // ),
+        ,
+        if (!isLandscape)
+          Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.3,
+              child: Chart(_recentTransaction)),
+        if (!isLandscape) txListWidget,
+        if (isLandscape)
+          _showChart
+              ? Container(
+                  height: (mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.7,
+                  child: Chart(_recentTransaction))
+              : txListWidget
+      ],
+    )));
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: (appBar as ObstructingPreferredSizeWidget),
+            child: pageBody,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    onPressed: () => _startAddNewTransaction(context),
+                    child: const Icon(Icons.add),
+                  ),
+          );
   }
 }
