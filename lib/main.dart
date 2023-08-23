@@ -32,8 +32,7 @@ void main() {
                       fontFamily: 'OpenSans',
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black
-                      ),
+                      color: Colors.black),
                 ),
             appBarTheme: const AppBarTheme(
                 titleTextStyle: TextStyle(
@@ -93,44 +92,53 @@ class _MyHomePageState extends State<MyHomePage> {
               child: NewTransaction(_addNewTransaction),
             ));
   }
-  List<Widget> _buildLandscapeWidget(MediaQueryData mediaQuery,AppBar appBar,Widget txListWidget){
-     return [Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-               Text('show chart',style: Theme.of(context).textTheme.titleSmall),
-              Switch.adaptive(
-                activeColor: Theme.of(context).colorScheme.secondary,
-                value: _showChart,
-                onChanged: (value) {
-                  setState(() {
-                    _showChart = value;
-                  });
-                },
-              )
-            ],
-          ),_showChart
-              ? Container(
-                  height: (mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.7,
-                  child: Chart(_recentTransaction))
-              : txListWidget];
-  }
 
- List<Widget> _buildPortraitContent(MediaQueryData mediaQuery,AppBar appBar,Widget txListWidget){
-       return  [Container(
+  List<Widget> _buildLandscapeWidget(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('show chart', style: Theme.of(context).textTheme.titleSmall),
+          Switch.adaptive(
+            activeColor: Theme.of(context).colorScheme.secondary,
+            value: _showChart,
+            onChanged: (value) {
+              setState(() {
+                _showChart = value;
+              });
+            },
+          )
+        ],
+      ),
+      _showChart
+          ? Container(
               height: (mediaQuery.size.height -
                       appBar.preferredSize.height -
                       mediaQuery.padding.top) *
-                  0.3,
-              child: Chart(_recentTransaction)),txListWidget];
+                  0.7,
+              child: Chart(_recentTransaction))
+          : txListWidget
+    ];
   }
 
-  Widget _buildAppBarContent(){
-return Platform.isIOS
-        ?  CupertinoNavigationBar(
-            middle:const Text(
+  List<Widget> _buildPortraitContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txListWidget) {
+    return [
+      Container(
+          height: (mediaQuery.size.height -
+                  appBar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.3,
+          child: Chart(_recentTransaction)),
+      txListWidget
+    ];
+  }
+
+  Widget _buildAppBarContent() {
+    return Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: const Text(
               'Personal Expenses',
               style: TextStyle(fontFamily: 'OpenSans'),
             ),
@@ -141,8 +149,10 @@ return Platform.isIOS
                 //   icon:const Icon(Icons.add),
                 //   onPressed: () => _startAddNewTransaction(context),
                 // )
-                GestureDetector(onTap:  () => _startAddNewTransaction(context),child: 
-               const Icon(CupertinoIcons.add),)
+                GestureDetector(
+                  onTap: () => _startAddNewTransaction(context),
+                  child: const Icon(CupertinoIcons.add),
+                )
               ],
             ),
           )
@@ -164,7 +174,7 @@ return Platform.isIOS
     final mediaQuery = MediaQuery.of(context);
 
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final  appBar =_buildAppBarContent();
+    final appBar = _buildAppBarContent();
 
     final txListWidget = Container(
         height: (mediaQuery.size.height -
@@ -173,13 +183,16 @@ return Platform.isIOS
             0.7,
         child: TransactionList(_userTransactions, _deleteTransaction));
 
-    final pageBody = SafeArea(child:  SingleChildScrollView(
-        child: Column(
+    final pageBody = SafeArea(
+        child: SingleChildScrollView(
+            child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        if (isLandscape)..._buildLandscapeWidget(mediaQuery,(appBar as AppBar),txListWidget),
-        
+        if (isLandscape)
+          ..._buildLandscapeWidget(
+              mediaQuery, (appBar as AppBar), txListWidget),
+
         // const Card(
         //   color: Colors.blue,
         //   elevation: 5,
@@ -190,9 +203,10 @@ return Platform.isIOS
         //         textAlign: TextAlign.center,
         //       )),
         // ),
-        
-        if (!isLandscape)..._buildPortraitContent(mediaQuery,(appBar as AppBar),txListWidget),
-          
+
+        if (!isLandscape)
+          ..._buildPortraitContent(
+              mediaQuery, (appBar as AppBar), txListWidget),
       ],
     )));
     return Platform.isIOS
