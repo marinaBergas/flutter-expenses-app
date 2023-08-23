@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import './adaptive_flat_button.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addNewTransaction;
 
-  const NewTransaction(this.addNewTransaction);
+  NewTransaction(this.addNewTransaction) {
+    // ignore: avoid_print
+    print('constructor');
+  }
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -14,6 +18,30 @@ class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
+
+  //constructor-initstate(for first time only)
+  //when change in component constructor-didupdate
+  //dispose when widget remove
+  @override
+  void initState() {
+    // ignore: avoid_print
+    print('initstate');
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant NewTransaction oldWidget) {
+    // ignore: avoid_print
+    print('didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    // ignore: avoid_print
+    print('dispose');
+    super.dispose();
+  }
 
   void _submitData() {
     if (_amountController.text.isEmpty) {
@@ -61,11 +89,15 @@ class _NewTransactionState extends State<NewTransaction> {
       child: Card(
         elevation: 5,
         child: Container(
-          padding:
-               EdgeInsets.only(left: 10, bottom: MediaQuery.of(context).viewInsets.bottom+10, right: 10, top: 10),
+          padding: EdgeInsets.only(
+              left: 10,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+              right: 10,
+              top: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
+              // CupertinoTextField(),
               TextField(
                 decoration: const InputDecoration(labelText: 'Title'),
                 // onChanged: (value) {
@@ -104,12 +136,7 @@ class _NewTransactionState extends State<NewTransaction> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                  onPressed: _submitData,
-                  style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white),
-                  child: const Text('Add transaction')),
+              AdaptiveFlatButton(_submitData, 'Add transaction')
             ],
           ),
         ),

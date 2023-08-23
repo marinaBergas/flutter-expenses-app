@@ -8,7 +8,6 @@ class ChartBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: avoid_print
-    print('${spendingPctOfTotal}sss');
     return LayoutBuilder(builder: (ctx, constraint) {
       return Column(
         children: <Widget>[

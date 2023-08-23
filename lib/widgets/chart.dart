@@ -17,10 +17,6 @@ class Chart extends StatelessWidget {
           totalSum += recentTransaction[i].amount;
         }
       }
-      // ignore: avoid_print
-      print(DateFormat.E().format(weekDay));
-      // ignore: avoid_print
-      print(totalSum);
 
       return {
         'day': DateFormat.E().format(weekDay).substring(0, 1),
@@ -31,15 +27,12 @@ class Chart extends StatelessWidget {
 
   double get totalSpending {
     return groupedTransactionValues.fold(0.0, (sum, element) {
-      // ignore: avoid_print
-      return sum + (element['amount'] as double);
+        return sum + (element['amount'] as double);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // ignore: avoid_print
-    print('${totalSpending}www');
     return Card(
           elevation: 6,
           margin: const EdgeInsets.all(20),
